@@ -10,8 +10,19 @@ public class UiHandler : MonoBehaviour
 {
     public Button startButton;
     public Button quitButton;
+    public GameObject inputField;
+    public string Name;
 
     // Start is called before the first frame update
+    
+
+    public void StoreName()
+    {
+        Name = inputField.GetComponent<Text>().text;
+        
+    }
+
+
 
     public void StartGame()
     {

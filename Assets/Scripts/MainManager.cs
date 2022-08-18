@@ -11,17 +11,37 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighScore;
     public GameObject GameOverText;
     
+
     private bool m_Started = false;
+    private string m_PlayerName;
     private int m_Points;
-    
+    public int highScore = 0;
+    public string highScorer;
+
+    private InputHandler inputHandler;
     private bool m_GameOver = false;
 
     
     // Start is called before the first frame update
     void Start()
     {
+        inputHandler = GameObject.Find("InputHandler").GetComponent<InputHandler>();
+        highScorer = PlayerPrefs.GetString("highScorer", "No Name");
+        highScore = PlayerPrefs.GetInt("highScore", highScore);
+
+        Debug.Log(highScore);
+        Debug.Log(highScorer);
+
+       
+
+        HighScore.text = $"{highScorer} : {highScore}";
+
+
+
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -40,6 +60,7 @@ public class MainManager : MonoBehaviour
 
     private void Update()
     {
+        m_PlayerName = inputHandler.playerName;
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -58,7 +79,10 @@ public class MainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            } else if (Input.GetKeyDown(KeyCode.Backspace))
+             
+
+            }
+            else if (Input.GetKeyDown(KeyCode.Backspace))
             {
                 SceneManager.LoadScene(0);
             }
@@ -68,12 +92,25 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+       ScoreText.text = $"{m_PlayerName} : {m_Points}";
+       
+        if(m_Points > highScore)
+        {
+            highScore = m_Points;
+            highScorer = m_PlayerName;
+
+        }
     }
 
     public void GameOver()
     {
+        HighScore.text = $"{highScorer} : {highScore}";
+        PlayerPrefs.SetString("highScorer", highScorer);
+        PlayerPrefs.SetInt("highScore", highScore);
+
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+
+  
 }
